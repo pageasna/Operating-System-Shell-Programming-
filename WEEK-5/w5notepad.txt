@@ -1,0 +1,210 @@
+w5q1
+#include <stdio.h>
+struct process {
+	int id;
+	double at, bt, ct, tat, wt; 
+};
+int main() {
+	int n, i;
+    	double current_time = 0;
+	struct process p[100], temp;
+
+	printf("Enter number of processes: ");
+	if(scanf("%d",&n)!=1 || n < 0) {
+		printf("Invalid number of processes.");
+		return 1;
+	}
+
+	printf("Enter arrival time for the processes:\n");
+	for(i=0; i<n; i++) {
+		p[i].id = i+1;
+		printf("P%d: ",p[i].id);
+		if(scanf("%lf", &p[i].at)!=1 || p[i].at < 0){
+			printf("Invalid arrival time!");
+			return 1;
+		}
+	}
+	printf("Enter burst time for the processes:\n");
+	for(i=0; i<n; i++) {
+		p[i].id = i+1;
+		printf("P%d: ",p[i].id);
+		if(scanf("%lf", &p[i].bt)!=1 || p[i].bt < 0){
+			printf("Invalid arrival time!");
+			return 1;
+		}
+	}
+	
+	for(i=0; i< n-1; i++) {
+		for(int j=0; j<n-i-1; j++){
+			if(p[j].at>p[j+1].at) {
+				temp=p[j];
+				p[j]=p[j+1];
+				p[j+1]=temp;
+			}
+		}
+	}
+
+    for (i = 0; i < n; i++) {
+        if (current_time < p[i].at)
+            current_time = p[i].at;
+
+        current_time += p[i].bt;
+        p[i].ct = current_time;
+
+        p[i].tat = p[i].ct - p[i].at;
+        p[i].wt = p[i].tat - p[i].bt;
+    }
+
+    printf("\nProcess\tAT\tBT\tCT\tTAT\tWT\n");
+
+    for (i = 0; i < n; i++)
+        printf("P%d\t%.2lf\t%.2lf\t%.2lf\t%.2lf\t%.2lf\n",p[i].id, p[i].at, p[i].bt, p[i].ct, p[i].tat, p[i].wt);
+
+    return 0;
+}
+
+w5q2
+#include <stdio.h>
+
+int main() {
+    int bt[3], i, time = 0;
+
+    printf("Enter burst time for 3 processes:\n");
+
+    for (i = 0; i < 3; i++) {
+        printf("P%d: ", i + 1);
+        scanf("%d", &bt[i]);
+    }
+
+    printf("\nGantt Chart:\n");
+
+    for (i = 0; i < 3; i++)
+        printf("--------");
+
+    printf("\n");
+
+    for (i = 0; i < 3; i++)
+        printf("  P%d  ", i + 1);
+
+    printf("\n");
+
+    for (i = 0; i < 3; i++)
+        printf("--------");
+
+    printf("\n");
+
+    printf("0");
+
+    for (i = 0; i < 3; i++) {
+        time += bt[i];
+        printf("\t%d", time);
+    }
+
+    printf("\n");
+
+    return 0;
+}
+
+w5q3
+#include <stdio.h>
+
+int main() {
+    int n, i;
+    float at[20], bt[20], wt, rr;
+    float current_time;
+
+    printf("Enter number of processes: ");
+    scanf("%d", &n);
+
+    for (i = 0; i < n; i++) {
+        printf("Enter Arrival Time and Burst Time for P%d: ", i + 1);
+        scanf("%f %f", &at[i], &bt[i]);
+    }
+
+    printf("\nEnter current time: ");
+    scanf("%f", &current_time);
+
+    printf("\nProcess\tWaiting Time\tResponse Ratio\n");
+
+    for (i = 0; i < n; i++) {
+        if (current_time >= at[i]) {
+            wt = current_time - at[i];
+            rr = (wt + bt[i]) / bt[i];
+
+            printf("P%d\t%.2f\t\t%.2f\n", i + 1, wt, rr);
+        } else {
+            printf("P%d\tNot arrived\t-\n", i + 1);
+        }
+    }
+
+    return 0;
+}
+
+w5q4
+#include <stdio.h>
+
+int main() {
+    int n, i, j;
+    int at[20], bt[20], queue[20];
+    int visited[20] = {0};
+    int front = 0, rear = 0;
+    int time = 0;
+
+    printf("Enter number of processes: ");
+    scanf("%d", &n);
+
+    for (i = 0; i < n; i++) {
+        printf("Enter Arrival Time and Burst Time for P%d: ", i + 1);
+        scanf("%d %d", &at[i], &bt[i]);
+    }
+
+    printf("\nReady Queue Simulation:\n");
+
+    while (front < n) {
+
+        /* Add processes that have arrived */
+        for (i = 0; i < n; i++) {
+            if (!visited[i] && at[i] <= time) {
+                queue[rear++] = i;
+                visited[i] = 1;
+            }
+        }
+
+        /* If queue is empty, move time to next arrival */
+        if (front == rear) {
+            int next = -1;
+
+            for (i = 0; i < n; i++) {
+                if (!visited[i] && (next == -1 || at[i] < at[next]))
+                    next = i;
+            }
+
+            time = at[next];
+            continue;
+        }
+
+        /* Execute first process in queue */
+        i = queue[front++];
+
+        printf("Time %d: P%d executes\n", time, i + 1);
+
+        time += bt[i];
+
+        printf("Ready Queue: ");
+
+        /* Add newly arrived processes */
+        for (j = 0; j < n; j++) {
+            if (!visited[j] && at[j] <= time) {
+                queue[rear++] = j;
+                visited[j] = 1;
+            }
+        }
+
+        for (j = front; j < rear; j++)
+            printf("P%d ", queue[j] + 1);
+
+        printf("\n");
+    }
+
+    return 0;
+}
