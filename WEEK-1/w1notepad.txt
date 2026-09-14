@@ -1,0 +1,84 @@
+w1q1
+
+#include <stdio.h>
+int main(){
+	int total_seconds, hours, minutes, seconds;
+	printf("Enter CPU burst time in seconds: ");
+	scanf("%d",&total_seconds);
+	if(total_seconds!=1 || total_seconds<0) {
+		printf("Invalid Time.\n");
+	}
+	else {
+		hours = total_seconds/3600;
+		minutes = (total_seconds%3600)/60;
+		seconds = total_seconds%60;
+		printf("Total time in HH:MM:SS is %02d:%02d:%02d\n",hours,minutes,seconds);
+	}
+		return 0;
+}	
+
+w1q2
+
+#include <stdio.h>
+int main() {
+	int pid;
+	printf("Enter PID: ");
+	if(scanf("%d",&pid)!=1 || pid<0) {
+		printf("Invalid PID.\n");
+	}
+	else {
+		if(pid%2==0) printf("System Process\n");
+		else printf("User Process\n");
+	}
+	return 0;
+}
+
+
+w1q3
+
+#include <stdio.h>
+int main() {
+	int  total_processes; 
+	float context_switch_time, total_overhead;
+	printf("Enter total processes: ");
+	scanf("%d",&total_processes);
+
+	printf("Enter context switch time (in ms): ");
+	scanf("%f",&context_switch_time);
+
+	if(total_processes>1) {
+		total_overhead = (total_processes-1) * context_switch_time;
+		printf("Total Overhead : %.2f\n",total_overhead);
+	}
+	else if(total_processes==1) {
+		printf("Total Overhead : 0.0 ms\n");
+	}
+	else printf("Invalid number of processes.\n");
+}
+
+w1q4
+
+#include <stdio.h>
+int main() {
+	int printers, users;
+	printf("Enter number of printers: ");
+	if(scanf("%d",&printers)!=1 || printers<0) {
+		printf("Invalid number of printers.\n");
+		return 1;
+	}
+	printf("Enter number of users: ");
+	if(scanf("%d",&users)!=1 || users<0) {
+		printf("Invalid number of users.\n");
+		return 1;
+	}
+	if(printers<users) {
+		printf("User per printer: %d\n", users/printers);
+		printf("Remaining users: %d\n", users%printers);
+		printf("Remaining users can use any printer.\n");
+	}
+	else {
+		printf("Printer per user: %d\n", printers/users);
+		printf("Remaining Printers: %d\n", printers%users);
+	}
+	return 0;
+}
